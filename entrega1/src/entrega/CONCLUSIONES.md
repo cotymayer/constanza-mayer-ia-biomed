@@ -8,16 +8,16 @@
 ## Ejercicio 1: Primera Llamada
 
 ### 1. Diferencia entre respuesta sin y con system instruction
-
+La respuesta sin system instruction es completamente técnica y general, como si estuvieras buscando una definición de libro, mientras que la respuesta con system instruction permite adaptar el lenguaje y el tono según lo que se define en este parámetro. Es una respuesta mucho más personalizada, en este caso por ejemplo teniendo empatía con el paciente.
 
 ### 2. ¿Pudiste modificar los parámetros internos del modelo? ¿Qué sí controlaste?
-
+No, los parámetros internos del modelo no se pueden modificar, pero sí se puede controlar los parámetros de la API como: el modelo, el system instruction y el prompt.
 
 ### 3. ¿Qué pasaría si cambiaras el rol en el system instruction?
-
+Cambiaría la respuesta, ya que el system intruction es lo que me da contexto y el comportamiento para poder responder al prompt.
 
 ### 4. ¿Qué system instruction sería útil para tu campo de estudio?
-
+"Sos un ingeniero biomédico especializado en ..." 
 
 ---
 
