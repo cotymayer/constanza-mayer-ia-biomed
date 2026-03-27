@@ -1,7 +1,7 @@
 # Conclusiones - Práctica LLMs para Biomedicina
 
-**Nombre:**
-**Fecha:**
+**Nombres:** Valentina García y Constanza Mayer
+**Fecha:** 27/3/26
 
 ---
 
