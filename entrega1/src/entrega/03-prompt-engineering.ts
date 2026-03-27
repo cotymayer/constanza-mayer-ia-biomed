@@ -36,7 +36,7 @@ async function llamar(
   systemInstruction?: string
 ) {
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash",
+    model: "gemini-2.5-flash",
     systemInstruction,
     generationConfig: { temperature: 0.3 }, // Baja para comparar mejor
   });
@@ -200,8 +200,70 @@ async function parteE() {
   // BONUS: ¿Podés hacer que el modelo detecte si le falta información
   //        y la pida explícitamente en vez de inventarla?
 
-  const miSystemInstruction = ""; // <-- TODO: Tu system instruction
-  const miPrompt = ""; // <-- TODO: Tu prompt
+  const miSystemInstruction =
+    `Sos un software de apoyo a la decisión clínica, aplicado especialmente al análisis de resultados de laboratorio.
+  REGLAS Y RESTRICCIONES:
+  - Analizá el caso de forma ordenada y sistemática
+  - Usá solo la información proporcionada por el caso 
+  - No inventes datos clínicos o de laboratorio
+  - Si falta información importante, indicalo explicitamente
+  - Justificá el diagnóstico con los hallazgos del laboratorio y antecedentes
+  - Indicá nivel de confianza (alto, medio o bajo)
+  - Respondé siempre en el formato indicado`; // <-- TODO: Tu system instruction
+
+  const miPrompt = `Vas a analizar casos clínicos y llegar a un diagnóstico basado en los datos clínicos y de laboratorio.
+  A continuación se muestran ejemplos de cómo analizar los casos:
+
+  EJEMPLO 1:
+  Caso: Hombre 68 años, Hb 9 g/dL, VCM 70 fL, ferritina baja.
+  Hallazgos anormales: Anemia, VCM bajo, ferritina baja.
+  Patrón: Anemia microcítica.
+  Diagnóstico principal: Anemia ferropénica.
+  Justificación: VCM bajo y ferritina baja indican deficiencia de hierro.
+  Diagnósticos diferenciales: Anemia por enfermedad crónica.
+  Estudios confirmatorios: Hierro sérico, TIBC.
+  Tratamiento inicial: Suplementos de hierro.
+  Información faltante: Sangrado digestivo.
+  Nivel de confianza: Alto.
+
+  EJEMPLO 2:
+  Caso: Mujer 45 años, Hb 10 g/dL, VCM 115 fL, vitamina B12 baja.
+  Hallazgos anormales: Anemia macrocítica, B12 baja.
+  Patrón: Anemia megaloblástica.
+  Diagnóstico principal: Deficiencia de vitamina B12.
+  Justificación: VCM alto y vitamina B12 baja.
+  Diagnósticos diferenciales: Deficiencia de ácido fólico.
+  Estudios confirmatorios: Anticuerpos anti factor intrínseco.
+  Tratamiento inicial: Suplementación con vitamina B12.
+  Información faltante: Dieta, enfermedades gastrointestinales.
+  Nivel de confianza: Alto.
+
+  Ahora analizá el siguiente caso clínico.
+
+  Seguí este razonamiento:
+  1. Primero revisá los estudios de laboratorio e identificá qué valores están fuera de los rangos normales.
+  2. A partir de esos valores anormales, intentá reconocer si existe algún patrón clínico o hematológico.
+  3. Luego relacioná esos hallazgos con los síntomas y los antecedentes del paciente.
+  4. Con toda esa información, proponé el diagnóstico principal y explicá por qué es el más probable.
+  5. Después mencioná otros diagnósticos diferenciales posibles y explicá por qué serían menos probables.
+  6. Indicá qué estudios pedirías para confirmar el diagnóstico.
+  7. Sugerí un tratamiento inicial.
+  8. Si considerás que falta información importante para confirmar el diagnóstico, indicá cuál.
+  9. Finalmente indicá el nivel de confianza del diagnóstico.
+
+  Respondé en el siguiente formato:
+  Hallazgos anormales:
+  Patrón:
+  Diagnóstico principal:
+  Justificación:
+  Diagnósticos diferenciales:
+  Estudios confirmatorios:
+  Tratamiento inicial:
+  Información faltante:
+  Nivel de confianza:
+
+  CASO:
+  ${CASO_CLINICO}` // <-- TODO: Tu prompt
 
   if (!miPrompt) {
     console.log("\n⚠️  Completá el TODO 2 para correr esta parte.\n");

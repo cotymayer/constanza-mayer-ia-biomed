@@ -37,6 +37,9 @@ const API_KEY = process.env.GEMINI_API_KEY || "";
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 
+// Utilidad para no exceder cuota de 15 RPM
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 // ---------------------------------------------------------------------------
 // UTILIDAD: Llamar al modelo con hiperparámetros específicos
 // ---------------------------------------------------------------------------
@@ -68,6 +71,7 @@ async function generarConConfig(
   console.log(`\nRespuesta (${text.length} chars):`);
   console.log(text);
   console.log();
+  await sleep(4000); // 4 segs delay para evitar límite de cuota (15 RPM)
 }
 
 // ---------------------------------------------------------------------------
@@ -197,7 +201,7 @@ async function parteD() {
   // ─────────────────────────────────────────────────────────────────────────
 
   // Opción A:
-  // const miPrompt = "Interpretá estos resultados de hemograma: WBC 12.5, RBC 3.8, Hb 11.2, Plt 450";
+  const miPrompt = "Interpretá estos resultados de hemograma: WBC 12.5, RBC 3.8, Hb 11.2, Plt 450";
 
   // Opción B:
   // const miPrompt = "Explicá la fisiopatología del Alzheimer a nivel molecular";
@@ -209,7 +213,7 @@ async function parteD() {
   // const miPrompt = "...";
 
   // ⚠️  Borrá esta línea cuando hayas descomentado una opción de arriba:
-  const miPrompt = "";
+  //const miPrompt = "";
 
   if (!miPrompt) {
     console.log("\n⚠️  Descomentá una de las opciones de arriba (A, B, C o D) para correr esta parte.\n");
@@ -227,13 +231,13 @@ async function parteD() {
   // ─────────────────────────────────────────────────────────────────────────
 
   // Configuración 1 – "Informe formal": conservadora, determinista, longitud media
-  // await generarConConfig(miPrompt, { temperature: 0.0, maxOutputTokens: 200 }, "Config 1: Informe formal");
+  await generarConConfig(miPrompt, { temperature: 0.0, maxOutputTokens: 400 }, "Config 1: Informe formal");
 
   // Configuración 2 – "Brainstorming": creativa, amplia, sin límite corto
-  // await generarConConfig(miPrompt, { temperature: 1.5, topP: 0.9 }, "Config 2: Brainstorming");
+  await generarConConfig(miPrompt, { temperature: 1.5, topP: 0.9 }, "Config 2: Brainstorming");
 
   // Configuración 3 – "App de telemedicina": respuesta corta y precisa
-  // await generarConConfig(miPrompt, { temperature: 0.3, maxOutputTokens: 80 }, "Config 3: App de telemedicina");
+  await generarConConfig(miPrompt, { temperature: 0.2, maxOutputTokens: 100 }, "Config 3: App de telemedicina");
 }
 
 // ---------------------------------------------------------------------------
@@ -257,6 +261,7 @@ async function parteE() {
     const text = result.response.text();
     respuestas.push(text);
     console.log(`Intento ${i + 1}: ${text.substring(0, 120)}...`);
+    await sleep(4000); // 4 segs delay
   }
 
   const todasIguales = respuestas.every((r) => r === respuestas[0]);
